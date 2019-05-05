@@ -13,7 +13,7 @@ namespace StreamR
     {
 			private readonly ConcurrentDictionary<string, StreamHolder> _streams = new ConcurrentDictionary<string, StreamHolder>();
         private long _globalClientId;
-
+       
         public List<string> ListStreams()
         {
             var streamList = new List<string>();
@@ -61,10 +61,10 @@ namespace StreamR
         {
             if (!_streams.TryGetValue(streamName, out var source))
             {
-                throw new HubException("stream doesn't exist");
+                    throw new HubException("stream doesn't exist");
             }
 
-            var id = Interlocked.Increment(ref this._globalClientId);
+            var     id = Interlocked.Increment(ref this._globalClientId);
 
             var channel = Channel.CreateBounded<string>(options: new BoundedChannelOptions(2)
             {
@@ -79,12 +79,12 @@ namespace StreamR
                 source.Viewers.TryRemove(id, out _);
             });
 
-            return channel.Reader.ReadAllAsync();
+            return  channel.Reader.ReadAllAsync();
         }
 
         private class StreamHolder
         {
-            public ChannelReader<string> Source;
+            public  ChannelReader<string> Source;
             public ConcurrentDictionary<long, Channel<string>> Viewers = new ConcurrentDictionary<long, Channel<string>>();
         }
     }
